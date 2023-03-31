@@ -9,8 +9,12 @@ namespace ConsoleApp2
 {
     class PopupItem
     {
-        IWebDriver driver;
+        private IWebDriver driver;
+        private string popupActionBtnXpath = "//aside[contains(@class,'_show')]//div[@class='modal-inner-wrap']//button/span[text()='{0}']";
+        private string popupMessageXpath = "//aside[contains(@class,'_show')]//div[@class='modal-content']/div";
+        private string suggestedAddressRadioBtnXpath = "//aside[contains(@class,'_show') and .//label[contains(text(),'{0}')]]//input[@name='candidate']";
 
+       
         public PopupItem(IWebDriver driver)
         {
             this.driver = driver;
@@ -20,17 +24,24 @@ namespace ConsoleApp2
         {
             return new PopupItem(driver);
         }
-        private string popupActionBtnXpath = "//div[@class='modal-inner-wrap']//button/span[text()='{0}']";
-        private string popupMessageXpath = "//div[@class='modal-inner-wrap' and .//h1[contains(text(),'Attention')]]//div[@class='modal-content']/div";
-
+ 
         public void ClickPopupActionBtn(String buttonName)
         {
+            //Util.MoveToItem(driver, string.Format(popupActionBtnXpath, buttonName));
             Util.ClickElementByXpath(driver, string.Format(popupActionBtnXpath, buttonName));
         }
 
         public string GetPopupMessage()
         {
+            //Util.MoveToItem(driver, popupMessageXpath);
             return Util.GetTextFromElement(driver, popupMessageXpath);
+        }
+
+        public void SelectSuggestedAddress(string streetAddress, string city)
+        {
+            string recomendationAddress = String.Join(", ", streetAddress.ToUpper(), city.ToUpper());
+            Util.ClickElementByXpath(driver, string.Format(suggestedAddressRadioBtnXpath, recomendationAddress));
+            ClickPopupActionBtn("Continue");
         }
     }
 }

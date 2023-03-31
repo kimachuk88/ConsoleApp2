@@ -9,7 +9,11 @@ namespace ConsoleApp2
 {
     class SidePanel
     {
-        IWebDriver driver;
+        private IWebDriver driver;
+        private string removeItemFromCartBtnXpath = "//div[@class='product-item-details' and .//a[text()='{0}']]//a[@title='Remove item']";
+        private string itemsNamesInCartXpath = "//strong[@class='product-item-name']//a";
+        private string viewAndEditCartBtnXpath = "//a[@class='action viewcart']/span[text()='View and Edit Cart']";
+        private string sidePanelCloseBtn = "//a[@id='btn-minicart-close']";
 
         public SidePanel(IWebDriver driver)
         {
@@ -20,10 +24,6 @@ namespace ConsoleApp2
         {
             return new SidePanel(driver);
         }
-        private string removeItemFromCartBtnXpath = "//div[@class='product-item-details' and .//a[text()='{0}']]//a[@title='Remove item']";
-        private string itemsNamesInCartXpath = "//strong[@class='product-item-name']//a";
-        private string viewAndEditCartBtnXpath = "//a[@class='action viewcart']/span[text()='View and Edit Cart']";
-        private string sidePanelCloseBtn = "//a[@id='btn-minicart-close']";
 
         public void RemoveItemFromCart(string ItemName)
         {
@@ -32,6 +32,7 @@ namespace ConsoleApp2
 
         public List<string> GetNamesOfItemsInCart()
         {
+            WaitUtil.WaitForElementStopMoving(driver, viewAndEditCartBtnXpath, 10);
             return Util.GetTextFromAllMatchingElements(driver, itemsNamesInCartXpath);
         }
 
@@ -42,6 +43,7 @@ namespace ConsoleApp2
 
         public void closeSidePanel()
         {
+            WaitUtil.WaitForElementStopMoving(driver, sidePanelCloseBtn, 10);
             Util.ClickElementByXpath(driver, sidePanelCloseBtn);
         }
     }

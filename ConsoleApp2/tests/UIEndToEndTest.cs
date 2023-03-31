@@ -6,6 +6,17 @@ namespace ConsoleApp2
     [TestFixture]
     class UIEndToEndTest : BaseTest
     {
+        string userEmail = "someone@whocares.com";
+        string userFirstName = "Test";
+        string userLastName = "Tester";
+        string userAddress = "2208 Oakton St";
+        string userCity = "Park Ridge";
+        string userZipCode = "60068";
+        string userTelephone = "4121234456";
+        string userCardNumber = "4111111111111111";
+        string userCardExpDate = "0226";
+        string userCardCVC = "123";
+
         [SetUp]
         public void InitPages()
         {
@@ -25,7 +36,7 @@ namespace ConsoleApp2
             string secondaryItem = "RPM Bike Cadence Sensor";
 
             // Select random product from any category and add it to the cart
-            homePage.CloseQuiz();
+            homePage.CloseQuizIfAppeared();
             homePage.OpenTopMenu("RIDE");
             homePage.OpenSubCategorie(primaryItemCategory);
             homePage.AddItemToCart(primaryItem);
@@ -33,8 +44,8 @@ namespace ConsoleApp2
             // Verify that side-bar cart appears with added product
             List<string> itemsInCart = sidePanel.GetNamesOfItemsInCart();
             Assert.That(itemsInCart.Contains(primaryItem), primaryItem + " was not found in cart");
-            sidePanel.closeSidePanel();            
-            
+            sidePanel.closeSidePanel();
+
             // Go back to product category and select another random product and add it to the cart, too.
             homePage.OpenSubCategorie(secondaryItemCategory);
             homePage.AddItemToCart(secondaryItem);
@@ -48,7 +59,7 @@ namespace ConsoleApp2
             sidePanel.RemoveItemFromCart(secondaryItem);
 
             // Confirm with the following pop-up
-            popupItem.ClickPopupActionBtn("Yes");
+            popupItem.ClickPopupActionBtn("OK");
             itemsInCart = sidePanel.GetNamesOfItemsInCart();
 
             // Verify that item successfully removed from the cart.
@@ -64,7 +75,7 @@ namespace ConsoleApp2
             Assert.That(primaryItemUnitPrice == initialSubtotalPrice, "Total and Subtotal are different");
 
             // Change the quantity of the item in the cart and click the update cart button.
-            mainCartPage.SetItemQty("2");
+            mainCartPage.SetItemQty(primaryItem, "2");
 
             // Prices should update to reflect the change.
             double subtotalAfterQtyChange = mainCartPage.GetItemPrice(primaryItem, "Subtotal");
@@ -79,17 +90,25 @@ namespace ConsoleApp2
             Assert.That(popupItem.GetPopupMessage().Equals("No shipping method selected"));
             popupItem.ClickPopupActionBtn("OK");
 
-            //  Enter any email, name, address, phone, credit card
-            checkoutPage.setEmailAddressField("someone@whocares.com");
-            checkoutPage.setFirstNameField("Test");
-            checkoutPage.setFirstNameField("Tester");
-            checkoutPage.setStreetAddressField("2208 Oakton Street");
-            checkoutPage.setCityField("Park Ridge");
-            checkoutPage.setPostCodeField("60068");
-            checkoutPage.setCardNumberField("4111111111111111");
-            checkoutPage.setCardExpiryField("0226");
-            
+            // Enter any email, name, address, phone, credit card
+            checkoutPage.SetEmailAddressField(userEmail);
+            checkoutPage.SetFirstNameField(userFirstName);
+            checkoutPage.SetLastNameField(userLastName);
+            checkoutPage.SetStreetAddressField(userAddress);
+            checkoutPage.SetCityField(userCity);
+            checkoutPage.SetPostCodeField(userZipCode);
+            popupItem.SelectSuggestedAddress(userAddress, userCity);
+            checkoutPage.SetTelephoneField(userTelephone);
+            checkoutPage.SetCardNumberField(userCardNumber);
+            checkoutPage.SetCardExpiryField(userCardExpDate);
+            checkoutPage.SetCardCVCField(userCardCVC);
 
+            // Click the blue place order button.
+            checkoutPage.clickPayNowBtn();
+
+            // Verify that payment is declined.
+            string expectedMessage = "Your card was declined. Your request was in live mode, but used a known test card.";
+            Assert.That(checkoutPage.GetDeclinedPaymentMessage().Equals(expectedMessage));
         }
 
     }

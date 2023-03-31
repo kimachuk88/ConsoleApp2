@@ -1,15 +1,16 @@
 ﻿using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApp2
 {
     class MainCartPage
     {
-        IWebDriver driver;
+        private IWebDriver driver;
+        private string itemQtyFieldXpath = "//tr[.//a[text()='{0}']]//input[@class='input-text qty']";
+        private string itemPriceXpath = "//tr[.//a[text()='{0}']]/td[@data-th='{1}']//span[@class='price']";
+        private string updateCartBtnXpath = "//button[@name='update_cart_action']";
+        private string proceedToCheckoutBtnXpath = "//button[@title='Proceed to Checkout']";
+
 
         public MainCartPage(IWebDriver driver)
         {
@@ -20,20 +21,22 @@ namespace ConsoleApp2
         {
             return new MainCartPage(driver);
         }
-        private string itemQtyFieldXpath = "//tr[.//a[text()='{0}']]//input[@class='input-text qty']";
-        private string itemPriceXpath = "//tr[.//a[text()='{0}']]/td[@data-th='{1}']//span[@class='price']";
-        private string updateCartBtnXpath = "//button[@name='update_cart_action']";
-        private string proceedToCheckoutBtnXpath = "//button[@title='Proceed to Checkout']";
-
-        public void SetItemQty(string itemQty)
+       
+        public void SetItemQty(string itemName, string itemQty)
         {
-            Util.InputTextIntoFieldByXpath(driver, itemQtyFieldXpath, itemQty);
+            Util.InputTextIntoFieldByXpath(driver, string.Format(itemQtyFieldXpath,itemName), itemQty);
             Util.ClickElementByXpath(driver, updateCartBtnXpath);
         }
 
         public double GetItemPrice(string itemName, string priceType)
         {
-            return double.Parse(Util.GetTextFromElement(driver, string.Format(itemPriceXpath, itemName, priceType)).Replace("$", ""));
+            String strNumber = Util.GetTextFromElement(driver, string.Format(itemPriceXpath, itemName, priceType)).Replace("$", "").Replace(".", ",");
+            if (!double.TryParse(strNumber, out double result))
+            {
+                throw new ArgumentException("String is not a valid number.");
+            }
+
+            return result;
         }
 
         public void ClickProceedToCheckoutBtn()

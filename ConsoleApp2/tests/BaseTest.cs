@@ -21,7 +21,6 @@ namespace ConsoleApp2
         {
             string sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
             driver = new ChromeDriver(System.IO.Path.Combine(sCurrentDirectory, @"..\..\driver"));
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
             driver.Manage().Window.Maximize();
             driver.Manage().Cookies.DeleteAllCookies();
             driver.Url = "http://www.wahoofitness.com";
