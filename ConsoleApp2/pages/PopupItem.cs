@@ -28,19 +28,20 @@ namespace ConsoleApp2
         public void ClickPopupActionBtn(String buttonName)
         {
             //Util.MoveToItem(driver, string.Format(popupActionBtnXpath, buttonName));
-            Util.ClickElementByXpath(driver, string.Format(popupActionBtnXpath, buttonName));
+            DriverUtil.ClickElementByXpath(driver, string.Format(popupActionBtnXpath, buttonName));
         }
 
         public string GetPopupMessage()
         {
             //Util.MoveToItem(driver, popupMessageXpath);
-            return Util.GetTextFromElement(driver, popupMessageXpath);
+            return DriverUtil.GetTextFromElement(driver, popupMessageXpath);
         }
 
         public void SelectSuggestedAddress(string streetAddress, string city)
         {
             string recomendationAddress = String.Join(", ", streetAddress.ToUpper(), city.ToUpper());
-            Util.ClickElementByXpath(driver, string.Format(suggestedAddressRadioBtnXpath, recomendationAddress));
+            WaitUtil.WaitForElementStopMoving(driver, string.Format(suggestedAddressRadioBtnXpath, recomendationAddress), 5);
+            DriverUtil.ClickElementByXpath(driver, string.Format(suggestedAddressRadioBtnXpath, recomendationAddress));
             ClickPopupActionBtn("Continue");
         }
     }

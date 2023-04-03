@@ -27,24 +27,24 @@ namespace ConsoleApp2
 
         public void RemoveItemFromCart(string ItemName)
         {
-            Util.ClickElementByXpath(driver, string.Format(removeItemFromCartBtnXpath, ItemName));
+            DriverUtil.ClickElementByXpath(driver, string.Format(removeItemFromCartBtnXpath, ItemName));
         }
 
         public List<string> GetNamesOfItemsInCart()
         {
             WaitUtil.WaitForElementStopMoving(driver, viewAndEditCartBtnXpath, 10);
-            return Util.GetTextFromAllMatchingElements(driver, itemsNamesInCartXpath);
+            return DriverUtil.GetTextFromAllMatchingElements(driver, itemsNamesInCartXpath);
         }
 
         public void ClickViewAndEditCartBtn()
         {
-            Util.ClickElementByXpath(driver, viewAndEditCartBtnXpath);
+            DriverUtil.ClickElementByXpath(driver, viewAndEditCartBtnXpath);
         }
 
         public void closeSidePanel()
         {
             WaitUtil.WaitForElementStopMoving(driver, sidePanelCloseBtn, 10);
-            Util.ClickElementByXpath(driver, sidePanelCloseBtn);
+            DriverUtil.ClickElementByXpath(driver, sidePanelCloseBtn);
         }
     }
 }

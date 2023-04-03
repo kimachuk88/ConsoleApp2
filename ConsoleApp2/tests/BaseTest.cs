@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using ConsoleApp2.pages;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -14,7 +15,8 @@ namespace ConsoleApp2
         public PopupItem popupItem;
         public MainCartPage mainCartPage;
         public SidePanel sidePanel;
-
+        public AllItemsPage allItemsPage;
+        public ItemDetailsPage itemDetailsPage;
 
         [SetUp]
         public void InitDriver()
@@ -27,7 +29,7 @@ namespace ConsoleApp2
         }
 
         [OneTimeTearDown]
-        public void closeDriver()
+        public void CloseDriver()
         {
             driver.Quit();
         }

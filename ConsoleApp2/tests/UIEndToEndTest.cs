@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using ConsoleApp2.pages;
+using ConsoleApp2.utils;
+using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace ConsoleApp2
@@ -6,6 +8,8 @@ namespace ConsoleApp2
     [TestFixture]
     class UIEndToEndTest : BaseTest
     {
+        string itemCategory = "RIDE";
+        string itemSubCategory = "All";
         string userEmail = "someone@whocares.com";
         string userFirstName = "Test";
         string userLastName = "Tester";
@@ -25,21 +29,28 @@ namespace ConsoleApp2
             popupItem = PopupItem.InitPage(driver);
             mainCartPage = MainCartPage.InitPage(driver);
             sidePanel = SidePanel.InitPage(driver);
+            allItemsPage = AllItemsPage.InitPage(driver);
+            itemDetailsPage = ItemDetailsPage.InitPage(driver);
         }
 
         [Test]
         public void Test1()
         {
-            string primaryItemCategory = "Bike Computers";
-            string secondaryItemCategory = "Cycling Sensors";
-            string primaryItem = "ELEMNT ROAM v2 GPS Bicycle Computer";
-            string secondaryItem = "RPM Bike Cadence Sensor";
-
-            // Select random product from any category and add it to the cart
+            // Wait for possible banner quiz and close if appear
             homePage.CloseQuizIfAppeared();
-            homePage.OpenTopMenu("RIDE");
-            homePage.OpenSubCategorie(primaryItemCategory);
-            homePage.AddItemToCart(primaryItem);
+
+            // Select random product from any category
+            homePage.OpenTopMenu(itemCategory);
+            homePage.OpenSubCategorie(itemSubCategory);
+            List<string> itemsOnPage = allItemsPage.getAllAvailableItemsNames();
+            string primaryItem = Util.GetRandomItemFromList(itemsOnPage);
+            allItemsPage.ViewItemDetails(primaryItem);
+
+            // If product has color option or other, select random
+            itemDetailsPage.SelectRandomValuesInDropDowns();
+
+            // Add it to the cart
+            itemDetailsPage.AddItemToCart();
 
             // Verify that side-bar cart appears with added product
             List<string> itemsInCart = sidePanel.GetNamesOfItemsInCart();
@@ -47,8 +58,12 @@ namespace ConsoleApp2
             sidePanel.closeSidePanel();
 
             // Go back to product category and select another random product and add it to the cart, too.
-            homePage.OpenSubCategorie(secondaryItemCategory);
-            homePage.AddItemToCart(secondaryItem);
+            homePage.OpenTopMenu(itemCategory);
+            homePage.OpenSubCategorie(itemSubCategory);
+            string secondaryItem = Util.GetRandomItemFromList(itemsOnPage);
+            allItemsPage.ViewItemDetails(secondaryItem);
+            itemDetailsPage.SelectRandomValuesInDropDowns();
+            itemDetailsPage.AddItemToCart();
 
             // Verify that side-bar cart appears with added product
             itemsInCart = sidePanel.GetNamesOfItemsInCart();
@@ -94,14 +109,12 @@ namespace ConsoleApp2
             checkoutPage.SetEmailAddressField(userEmail);
             checkoutPage.SetFirstNameField(userFirstName);
             checkoutPage.SetLastNameField(userLastName);
+            checkoutPage.SetTelephoneField(userTelephone);
             checkoutPage.SetStreetAddressField(userAddress);
             checkoutPage.SetCityField(userCity);
             checkoutPage.SetPostCodeField(userZipCode);
             popupItem.SelectSuggestedAddress(userAddress, userCity);
-            checkoutPage.SetTelephoneField(userTelephone);
-            checkoutPage.SetCardNumberField(userCardNumber);
-            checkoutPage.SetCardExpiryField(userCardExpDate);
-            checkoutPage.SetCardCVCField(userCardCVC);
+            checkoutPage.SetCardDetailsFields(userCardNumber, userCardExpDate, userCardCVC);
 
             // Click the blue place order button.
             checkoutPage.clickPayNowBtn();

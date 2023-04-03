@@ -18,6 +18,7 @@ namespace ConsoleApp2
         private string cardCVCFieldXpath = "//span[contains(@class,'CardField-cvc')]//input[@name='cvc']";
         private string telephoneFieldXpath = "//form[@id='co-shipping-form']//input[@name='telephone']";
         private string paymentDeclinedMessageXpath = "//div[@data-role='checkout-messages']//div[@data-ui-id='checkout-cart-validationmessages-message-error']";
+        private string paymentFrameXpath = "//div[@id='amasty_stripe_card_data']//iframe";
 
         public CheckoutPage(IWebDriver driver)
         {
@@ -31,63 +32,57 @@ namespace ConsoleApp2
 
         public void clickPayNowBtn()
         {
-            Util.ClickElementByXpath(driver, payNowBtnXpath);
+            DriverUtil.ClickElementByXpath(driver, payNowBtnXpath);
         }
 
         public void SetEmailAddressField(String emailAddress)
         {
-            Util.InputTextIntoFieldByXpath(driver, emailFieldXpath, emailAddress);
+            DriverUtil.InputTextIntoFieldByXpath(driver, emailFieldXpath, emailAddress);
         }
 
         public void SetFirstNameField(String firstName)
         {
-            Util.InputTextIntoFieldByXpath(driver, firstNameFieldXpath, firstName);
+            DriverUtil.InputTextIntoFieldByXpath(driver, firstNameFieldXpath, firstName);
         }
 
         public void SetLastNameField(String lastName)
         {
-            Util.InputTextIntoFieldByXpath(driver, lastNameFieldXpath, lastName);
+            DriverUtil.InputTextIntoFieldByXpath(driver, lastNameFieldXpath, lastName);
         }
 
         public void SetStreetAddressField(String streetAddress)
         {
-            Util.InputTextIntoFieldByXpath(driver, streetAddressFieldXpath, streetAddress);
+            DriverUtil.InputTextIntoFieldByXpath(driver, streetAddressFieldXpath, streetAddress);
         }
 
         public void SetCityField(String cityField)
         {
-            Util.InputTextIntoFieldByXpath(driver, cityFieldXpath, cityField);
+            DriverUtil.InputTextIntoFieldByXpath(driver, cityFieldXpath, cityField);
         }
 
-        public void SetPostCodeField(String postCode)
+        public void SetPostCodeField(string postCode)
         {
-            Util.InputTextIntoFieldByXpath(driver, postCodeFieldXpath, postCode);
+            DriverUtil.InputTextIntoFieldByXpath(driver, postCodeFieldXpath, postCode);
         }
 
-        public void SetTelephoneField(String telephone)
+        public void SetTelephoneField(string telephone)
         {
-            Util.InputTextIntoFieldByXpath(driver, telephoneFieldXpath, telephone);
+            DriverUtil.InputTextIntoFieldByXpath(driver, telephoneFieldXpath, telephone);
         }
 
-        public void SetCardNumberField(String cardNumber)
+        public void SetCardDetailsFields(string cardNumber, string cardExpiry, string cardCVC)
         {
-            Util.InputTextIntoFieldByXpath(driver, cardNumberFieldXpath, cardNumber);
-        }
-
-        public void SetCardExpiryField(String cardExpiry)
-        {
-            Util.InputTextIntoFieldByXpath(driver, cardExpiryDateFieldXpath, cardExpiry);
-        }
-
-        public void SetCardCVCField(String cardCVC)
-        {
-            Util.InputTextIntoFieldByXpath(driver, cardCVCFieldXpath, cardCVC);
+            DriverUtil.SwitchToFrame(driver, paymentFrameXpath);
+            DriverUtil.InputTextIntoFieldSlowlyByXpath(driver, cardNumberFieldXpath, cardNumber, 100);
+            DriverUtil.InputTextIntoFieldByXpath(driver, cardExpiryDateFieldXpath, cardExpiry);
+            DriverUtil.InputTextIntoFieldByXpath(driver, cardCVCFieldXpath, cardCVC);
+            DriverUtil.SwitchToDefaultContent(driver);
         }
 
         public string GetDeclinedPaymentMessage()
         {
             WaitUtil.WaitForElement(driver, paymentDeclinedMessageXpath, 10);
-            return Util.GetTextFromElement(driver, paymentDeclinedMessageXpath);
+            return DriverUtil.GetTextFromElement(driver, paymentDeclinedMessageXpath);
         }
     }
 }

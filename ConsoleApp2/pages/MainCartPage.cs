@@ -24,13 +24,13 @@ namespace ConsoleApp2
        
         public void SetItemQty(string itemName, string itemQty)
         {
-            Util.InputTextIntoFieldByXpath(driver, string.Format(itemQtyFieldXpath,itemName), itemQty);
-            Util.ClickElementByXpath(driver, updateCartBtnXpath);
+            DriverUtil.InputTextIntoFieldByXpath(driver, string.Format(itemQtyFieldXpath,itemName), itemQty);
+            DriverUtil.ClickElementByXpath(driver, updateCartBtnXpath);
         }
 
         public double GetItemPrice(string itemName, string priceType)
         {
-            String strNumber = Util.GetTextFromElement(driver, string.Format(itemPriceXpath, itemName, priceType)).Replace("$", "").Replace(".", ",");
+            String strNumber = DriverUtil.GetTextFromElement(driver, string.Format(itemPriceXpath, itemName, priceType)).Replace("$", "").Replace(".", ",");
             if (!double.TryParse(strNumber, out double result))
             {
                 throw new ArgumentException("String is not a valid number.");
@@ -41,7 +41,7 @@ namespace ConsoleApp2
 
         public void ClickProceedToCheckoutBtn()
         {
-            Util.ClickElementByXpath(driver, proceedToCheckoutBtnXpath);
+            DriverUtil.ClickElementByXpath(driver, proceedToCheckoutBtnXpath);
         }
     }
 }

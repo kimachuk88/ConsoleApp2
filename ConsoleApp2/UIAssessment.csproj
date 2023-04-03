@@ -62,12 +62,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="pages\AllItemsPage.cs" />
+    <Compile Include="pages\ItemDetailsPage.cs" />
     <Compile Include="tests\BaseTest.cs" />
     <Compile Include="pages\CheckoutPage.cs" />
     <Compile Include="pages\HomePage.cs" />
     <Compile Include="pages\MainCartPage.cs" />
     <Compile Include="pages\PopupItem.cs" />
     <Compile Include="pages\SidePanel.cs" />
+    <Compile Include="utils\DriverUtil.cs" />
     <Compile Include="utils\Util.cs" />
     <Compile Include="utils\WaitUtil.cs" />
     <Compile Include="tests\UIEndToEndTest.cs" />
